@@ -1,0 +1,50 @@
+# =====================
+# Maven / Java
+# =====================
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# =====================
+# IDEs
+# =====================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# =====================
+# OS
+# =====================
+.DS_Store
+Thumbs.db
+
+# =====================
+# Docker
+# =====================
+# No subir imágenes ni contenedores
+docker-compose.override.yml
+*.env
+*.dockerignore
+
+# =====================
+# Spring Boot
+# =====================
+/spring.log
