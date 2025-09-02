@@ -1,4 +1,4 @@
-package com.example.Chat_Empresa_to_Postulante.dto;
+package com.application.dto;
 
 public class MensajeDTO {
     private String contenido;
@@ -11,6 +11,10 @@ public class MensajeDTO {
         this.contenido = contenido;
         this.remitenteId = remitenteId;
         this.destinatarioId = destinatarioId;
-    }}
+    }
+    public String getContenido(){
+        return this.contenido;
+    }
+}
 
     // Frontend envie datos al backend sin enviar todo el objeto completo

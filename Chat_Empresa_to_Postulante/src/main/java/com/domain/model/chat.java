@@ -1,9 +1,10 @@
-package com.example.Chat_Empresa_to_Postulante.model;
-
+package com.domain.model;
+import com.domain.model.Mensaje;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import com.example.Chat_Empresa_to_Postulante.model.Mensaje; // <-- Import necesario
+
 
 
 
@@ -21,7 +22,7 @@ public class chat {
 
     // Relación uno a muchos con mensaje
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Mensaje> mensajes;
+    private List<Mensaje> mensajes = new ArrayList<>();
 
     public chat() {}
 
@@ -39,5 +40,5 @@ public class chat {
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 
     public List<Mensaje> getMensajes() { return mensajes; }
-    public void setMensajes(List<Mensaje> mensajes) { this.mensajes = mensajes; }
+    public void addMensajes(Mensaje mensaje) { this.mensajes.add(mensaje); mensaje.setChat(this); }
 }

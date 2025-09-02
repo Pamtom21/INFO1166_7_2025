@@ -1,34 +1,43 @@
 package com.domain.model;
 
-public class Empresa {
-    private String rut;
-    private String razon;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "empresa")
+public class empresa {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idEmpresa;
     private String direccion;
+    private String vacante;
+    private String cargo;
+    private String descripcion;
+    private LocalDate fechaPostulacion;
 
-    public Empresa(String rut,String razon,String direccion){
-        this.rut = rut;
-        this.razon = razon;
-        this.direccion = direccion;
-    }
-    // getters
+    public empresa() {}
 
-    public String getRut(){
-        return rut;
-    }
-    public String getRazon(){
-        return razon;
-    }
-    public String getDireccion(){
-        return direccion;
-    }
-    // setters
-    public void setRut(String rut){
-        this.rut = rut;
-    }
-    public void setRazon(String razon){
-        this.razon = razon;
-    }
-    public void setDireccion(String direccion){
-        this.direccion = direccion;
-    }
+    // Getters y Setters
+    public Long getIdEmpresa() { return idEmpresa; }
+    public void setIdEmpresa(Long idEmpresa) { this.idEmpresa = idEmpresa; }
+
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getVacante() { return vacante; }
+    public void setVacante(String vacante) { this.vacante = vacante; }
+
+    public String getCargo() { return cargo; }
+    public void setCargo(String cargo) { this.cargo = cargo; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public LocalDate getFechaPostulacion() { return fechaPostulacion; }
+    public void setFechaPostulacion(LocalDate fechaPostulacion) { this.fechaPostulacion = fechaPostulacion; }
 }

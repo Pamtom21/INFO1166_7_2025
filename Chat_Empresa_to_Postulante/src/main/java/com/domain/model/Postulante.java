@@ -1,51 +1,41 @@
 package com.domain.model;
 
-import java.sql.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
 
-public class Postulante {
-    private String rut;
+@Entity
+@Table(name = "postulante")
+public class postulante {
+
+    @Id
+    private String rut;  
     private String nombre;
     private String apellido;
-    private Date fechaNacimiento;
+    private LocalDate fechaNacimiento;
+    private String direccion;
+    private String afp;
 
-    public Postulante(String rut, String nombre, String apellido, Date fechaNacimiento) {
-        this.rut = rut;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.fechaNacimiento = fechaNacimiento;
-    }
+    // Constructor vacío
+    public postulante() {}
 
-    // Getters
-    public String getRut() {
-        return rut;
-    }
+    // Getters y Setters
+    public String getRut() { return rut; }
+    public void setRut(String rut) { this.rut = rut; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getApellido() {
-        return apellido;
-    }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
-    }
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
-    // Setters
-    public void setRut(String rut) {
-        this.rut = rut;
-    }
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
+    public String getAfp() { return afp; }
+    public void setAfp(String afp) { this.afp = afp; }
 }

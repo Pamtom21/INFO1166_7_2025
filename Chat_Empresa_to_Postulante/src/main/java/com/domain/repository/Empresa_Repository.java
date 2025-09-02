@@ -1,6 +1,6 @@
-package com.example.Chat_Empresa_to_Postulante.repository;
+package com.domain.repository;
 
-import com.example.Chat_Empresa_to_Postulante.model.empresa;
+import com.domain.model.empresa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface Empresa_Repository extends JpaRepository<empresa, Long> {
