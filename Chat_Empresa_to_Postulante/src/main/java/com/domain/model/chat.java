@@ -41,4 +41,8 @@ public class chat {
 
     public List<Mensaje> getMensajes() { return mensajes; }
     public void addMensajes(Mensaje mensaje) { this.mensajes.add(mensaje); mensaje.setChat(this); }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Huentemilla

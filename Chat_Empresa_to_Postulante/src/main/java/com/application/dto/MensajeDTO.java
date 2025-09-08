@@ -16,5 +16,3 @@ public class MensajeDTO {
         return this.contenido;
     }
 }
-
-    // Frontend envie datos al backend sin enviar todo el objeto completo
