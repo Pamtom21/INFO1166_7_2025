@@ -1,5 +1,5 @@
 package com.domain.model;
-import com.domain.model.Mensaje;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "chat")
-public class chat {
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class chat {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mensaje> mensajes = new ArrayList<>();
 
-    public chat() {}
+    public Chat() {}
 
     // Getters y Setters
     public Long getIdChat() { return idChat; }
@@ -41,8 +41,4 @@ public class chat {
 
     public List<Mensaje> getMensajes() { return mensajes; }
     public void addMensajes(Mensaje mensaje) { this.mensajes.add(mensaje); mensaje.setChat(this); }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/Huentemilla

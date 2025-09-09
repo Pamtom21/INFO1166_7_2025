@@ -1,11 +1,6 @@
 package com.domain.model;
 
-<<<<<<< HEAD
-import jakarta.persistence.*;
 
-@Entity
-public class Usuario {
-=======
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,17 +11,13 @@ import jakarta.persistence.*;
 
 @Entity
 public class Usuario implements UserDetails{
->>>>>>> origin/Huentemilla
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nombre; //nombre del usuario
-<<<<<<< HEAD
-=======
     private String email; // email o rut (definir)
     private String password; // contraseña del usuario
->>>>>>> origin/Huentemilla
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipo;
@@ -36,12 +27,6 @@ public class Usuario implements UserDetails{
     public String getNombre(){return this.nombre; }
     public void setNombre(String nombre){this.nombre = nombre;}
 
-<<<<<<< HEAD
-    public TipoUsuario getTipo(){return this.tipo; }
-    public void setTipo(TipoUsuario tipo){this.tipo = tipo;}
-    //  Modelo de datos que guarda la informacion de usuarios..
-}
-=======
     public String getEmail(){return this.email; }
     public void setEmail(String email){this.email = email;}
 
@@ -77,4 +62,3 @@ public class Usuario implements UserDetails{
     @Override
     public boolean isEnabled() { return true; }
 }
->>>>>>> origin/Huentemilla

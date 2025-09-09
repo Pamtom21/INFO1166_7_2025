@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/Huentemilla
 package com.domain.repository;
 
 import com.domain.model.Mensaje;

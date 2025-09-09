@@ -2,7 +2,7 @@ package com.service;
 
 import com.application.dto.MensajeDTO;
 import com.domain.model.Mensaje;
-import com.domain.model.chat;
+import com.domain.model.Chat;
 import com.domain.model.Usuario;
 import com.domain.repository.MensajeRepository;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,9 @@ public class ChatService {
         this.mensajeRepository = mensajeRepository;
     }
 //recibe el dto construye un mensaje y lo guarda en la bd
-public Mensaje enviarMensaje(chat chat, MensajeDTO dto, Usuario remitente, Usuario destinatario) {
+public Mensaje enviarMensaje(Chat chat, MensajeDTO dto, Usuario remitente, Usuario destinatario) {
     if (chat == null) {
-        chat = new chat();
+        chat = new Chat();
         chat.setRemitente(remitente.getNombre());
         chat.setDestinatario(destinatario.getNombre());
         chat.setFechaHora(LocalDateTime.now());

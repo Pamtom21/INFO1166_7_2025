@@ -1,10 +1,8 @@
 package com.domain.security;
 
 import com.service.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,25 +16,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
+    private final MyUserDetailsService userDetailsService;
 
-    @Autowired
-    private MyUserDetailsService userDetailsService;
+    public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService) {
+        this.jwtFilter = jwtFilter;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                 .requestMatchers("/auth/**").permitAll()
-                 .requestMatchers("/perfil/**", "/chat/**", "/mensaje/**").authenticated()//rutas protegidas
-            .anyRequest().authenticated() 
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/perfil/**", "/chat/**", "/mensaje/**").authenticated()
+                .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            );
 
-        // Añadir el filtro JWT antes del filtro de autenticación de Spring
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -52,7 +51,7 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
         authBuilder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder()); // No usar .and()
+                .passwordEncoder(passwordEncoder());
 
         return authBuilder.build();
     }
