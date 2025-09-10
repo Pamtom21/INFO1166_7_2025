@@ -12,10 +12,12 @@ function Login() {
   const [tipo, setTipo] = useState('');
   const [registerError, setRegisterError] = useState('');
   const [registerSuccess, setRegisterSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsSubmitting(true);
     try {
       const res = await axios.post('https://info1166-7-2025.onrender.com/auth/login', { email, password });
       alert('Token: ' + res.data.token);
@@ -25,6 +27,8 @@ function Login() {
       } else {
         setError('Error de conexión');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -32,11 +36,25 @@ function Login() {
     e.preventDefault();
     setRegisterError('');
     setRegisterSuccess('');
+
+    // Validación previa
+    if (!nombre || !email || !password || !tipo) {
+      setRegisterError('Todos los campos son obligatorios');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      await axios.post('https://info1166-7-2025.onrender.com/auth/register', null, {
-        params: { nombre, email, password, tipo }
+      await axios.post('https://info1166-7-2025.onrender.com/auth/register', {
+        nombre,
+        email,
+        password,
+        tipo
       });
+
       setRegisterSuccess('Usuario registrado correctamente');
+      setTimeout(() => setRegisterSuccess(''), 5000);
+
       setNombre('');
       setEmail('');
       setPassword('');
@@ -47,6 +65,8 @@ function Login() {
       } else {
         setRegisterError('Error de conexión');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -57,7 +77,7 @@ function Login() {
           <h2>Login</h2>
           <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
           <input type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} required />
-          <button type="submit">Ingresar</button>
+          <button type="submit" disabled={isSubmitting}>Ingresar</button>
           {error && <p>{error}</p>}
           <button type="button" className="switch-btn" onClick={() => setShowRegister(true)}>
             ¿No tienes cuenta? Regístrate
@@ -74,9 +94,9 @@ function Login() {
             <option value="EMPRESA">Empresa</option>
             <option value="POSTULANTE">Postulante</option>
           </select>
-          <button type="submit">Registrarse</button>
+          <button type="submit" disabled={isSubmitting}>Registrarse</button>
           {registerError && <p>{registerError}</p>}
-          {registerSuccess && <p style={{color:'green'}}>{registerSuccess}</p>}
+          {registerSuccess && <p style={{ color: 'green' }}>{registerSuccess}</p>}
           <button type="button" className="switch-btn" onClick={() => setShowRegister(false)}>
             ¿Ya tienes cuenta? Inicia sesión
           </button>
@@ -85,4 +105,5 @@ function Login() {
     </div>
   );
 }
+
 export default Login;
