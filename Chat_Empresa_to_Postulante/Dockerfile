@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 # Etapa de ejecución
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/target/Chat_Empresa_to_Postulante-0.0.1-SNAPSHOT.jar app.jar
 
 # Render usa la variable PORT
 ENV PORT=8080
