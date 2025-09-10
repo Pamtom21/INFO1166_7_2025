@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div th:fragment="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/chat}">
+                        <i class="fas fa-comments me-2"></i>
+                        Chat
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-cog me-2"></i>
+                        Configuración
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

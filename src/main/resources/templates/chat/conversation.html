@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat - BNE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .chat-container {
+            height: 60vh;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .message-box {
+            max-width: 70%;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 15px;
+        }
+        .message-enviado {
+            margin-left: auto;
+            background-color: #007bff;
+            color: white;
+        }
+        .message-recibido {
+            margin-right: auto;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+        }
+        .conversacion-activa {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+        #input-chat {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" th:href="@{/dashboard}">BNE Chat</a>
+            <span class="navbar-text text-white">
+                <span id="usuario-actual" th:text="${usuarioActual}">Usuario</span>
+                <a href="#" th:href="@{/dashboard}" class="text-white me-3"><i class="fas fa-arrow-left"></i> Dashboard</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
+                </form>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Lista de conversaciones -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-comments me-2"></i>Conversaciones
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="lista-conversaciones">
+                            <!-- Las conversaciones se cargarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Área de chat -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            <span id="nombre-conversacion">Selecciona una conversación</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="chat-container" id="area-mensajes">
+                            <div class="text-center text-muted" id="sin-mensajes">
+                                <i class="fas fa-comments fa-2x mb-2"></i>
+                                <p>Selecciona una conversación para comenzar a chatear</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Input para enviar mensajes - SIEMPRE VISIBLE -->
+                        <div class="card-footer" id="input-chat">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="mensaje-input" 
+                                       placeholder="Escribe un mensaje..." autocomplete="off"
+                                       disabled>
+                                <button class="btn btn-primary" type="button" id="btn-enviar" disabled>
+                                    <i class="fas fa-paper-plane"></i> Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WebJars para STOMP y SockJS -->
+    <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+    <script th:src="@{/webjars/stomp-websocket/2.3.4/stomp.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Variables globales
+        let stompClient = null;
+        let conversacionActual = null;
+        const usuarioActual = document.getElementById('usuario-actual').textContent;
+
+        // Conectar WebSocket
+        function conectarWebSocket() {
+            console.log('Intentando conectar WebSocket...');
+            
+            try {
+                const socket = new SockJS('/ws-chat');
+                stompClient = Stomp.over(socket);
+                
+                stompClient.connect({}, function(frame) {
+                    console.log('✅ Conectado a WebSocket: ' + frame);
+                    
+                    stompClient.subscribe('/topic/mensajes', function(mensaje) {
+                        const mensajeData = JSON.parse(mensaje.body);
+                        console.log('Mensaje recibido:', mensajeData);
+                        mostrarMensaje(mensajeData);
+                    });
+                    
+                }, function(error) {
+                    console.log('⚠️ WebSocket no disponible, usando modo local');
+                });
+            } catch (error) {
+                console.log('⚠️ WebSocket no configurado, usando modo local');
+            }
+            
+            // ✅ HABILITAR CAMPOS Y CARGAR CONVERSACIONES
+            habilitarCamposChat();
+            cargarYSeleccionarConversaciones();
+        }
+
+        // ✅ FUNCIÓN PARA HABILITAR CAMPOS
+        function habilitarCamposChat() {
+            document.getElementById('mensaje-input').disabled = false;
+            document.getElementById('btn-enviar').disabled = false;
+            document.getElementById('mensaje-input').placeholder = "Escribe un mensaje...";
+            document.getElementById('mensaje-input').focus();
+        }
+
+        // Cargar y seleccionar conversaciones
+        function cargarYSeleccionarConversaciones() {
+            const conversaciones = [
+                { id: 1, nombre: 'Juan Pérez', ultimoMensaje: 'Hola, tengo una pregunta...' },
+                { id: 2, nombre: 'María García', ultimoMensaje: 'Necesito información...' },
+                { id: 3, nombre: 'Carlos López', ultimoMensaje: 'Consulta sobre el proceso...' }
+            ];
+            
+            const lista = document.getElementById('lista-conversaciones');
+            lista.innerHTML = '';
+            
+            conversaciones.forEach(conversacion => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action';
+                item.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">${conversacion.nombre}</h6>
+                        <small class="text-muted">Ahora</small>
+                    </div>
+                    <p class="mb-1 text-truncate">${conversacion.ultimoMensaje}</p>
+                `;
+                
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    seleccionarConversacion(conversacion, this);
+                });
+                
+                lista.appendChild(item);
+            });
+            
+            // Seleccionar primera conversación
+            if (conversaciones.length > 0) {
+                seleccionarConversacion(conversaciones[0], lista.firstChild);
+            }
+        }
+
+        // Seleccionar conversación
+        function seleccionarConversacion(conversacion, elemento) {
+            conversacionActual = conversacion;
+            
+            document.getElementById('nombre-conversacion').textContent = conversacion.nombre;
+            document.getElementById('sin-mensajes').style.display = 'none';
+            
+            // ✅ CONFIRMAR QUE CAMPOS ESTÉN HABILITADOS
+            habilitarCamposChat();
+            
+            // Resaltar conversación seleccionada
+            document.querySelectorAll('#lista-conversaciones a').forEach(item => {
+                item.classList.remove('conversacion-activa');
+            });
+            if (elemento) elemento.classList.add('conversacion-activa');
+            
+            cargarMensajesConversacion(conversacion.id);
+        }
+
+        // Cargar mensajes de la conversación
+        function cargarMensajesConversacion(conversacionId) {
+            const areaMensajes = document.getElementById('area-mensajes');
+            areaMensajes.innerHTML = '';
+            
+            const mensajes = [
+                { contenido: 'Hola, tengo una pregunta sobre el proceso de selección', remitente: 'Juan Pérez', tipo: 'RECIBIDO', timestamp: '10:30 AM' },
+                { contenido: '¡Hola! Claro, dime en qué puedo ayudarte', remitente: usuarioActual, tipo: 'ENVIADO', timestamp: '10:31 AM' },
+                { contenido: 'Quería saber cuándo tendrán los resultados de la entrevista', remitente: 'Juan Pérez', tipo: 'RECIBIDO', timestamp: '10:32 AM' }
+            ];
+            
+            mensajes.forEach(mensaje => {
+                mostrarMensaje(mensaje);
+            });
+        }
+
+        // Mostrar mensaje en el chat
+        function mostrarMensaje(mensaje) {
+            const areaMensajes = document.getElementById('area-mensajes');
+            const sinMensajes = document.getElementById('sin-mensajes');
+            
+            if (sinMensajes) sinMensajes.style.display = 'none';
+            
+            const mensajeDiv = document.createElement('div');
+            mensajeDiv.className = `d-flex justify-content-${mensaje.tipo === 'ENVIADO' ? 'end' : 'start'} mb-3`;
+            
+            mensajeDiv.innerHTML = `
+                <div class="message-box ${mensaje.tipo === 'ENVIADO' ? 'message-enviado' : 'message-recibido'} p-3 rounded">
+                    <strong>${mensaje.tipo === 'ENVIADO' ? 'Tú' : mensaje.remitente}:</strong>
+                    <p class="mb-1">${mensaje.contenido}</p>
+                    <small class="${mensaje.tipo === 'ENVIADO' ? 'text-white-50' : 'text-muted'}">
+                        ${mensaje.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </small>
+                </div>
+            `;
+            
+            areaMensajes.appendChild(mensajeDiv);
+            areaMensajes.scrollTop = areaMensajes.scrollHeight;
+        }
+
+        // Enviar mensaje (FUNCIONA SIN WEBSOCKET)
+        function enviarMensaje() {
+            const input = document.getElementById('mensaje-input');
+            const contenido = input.value.trim();
+            
+            if (contenido && conversacionActual) {
+                const mensaje = {
+                    contenido: contenido,
+                    remitente: usuarioActual,
+                    destinatario: conversacionActual.nombre,
+                    tipo: 'ENVIADO',
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                
+                // Mostrar mensaje inmediatamente
+                mostrarMensaje(mensaje);
+                
+                // Simular respuesta
+                setTimeout(() => {
+                    const respuesta = {
+                        contenido: "¡Mensaje recibido! Te responderemos pronto.",
+                        remitente: conversacionActual.nombre,
+                        tipo: 'RECIBIDO',
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    };
+                    mostrarMensaje(respuesta);
+                }, 800);
+                
+                // Limpiar input
+                input.value = '';
+                input.focus();
+                
+            } else {
+                alert('Por favor escribe un mensaje primero');
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('btn-enviar').addEventListener('click', enviarMensaje);
+        document.getElementById('mensaje-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') enviarMensaje();
+        });
+
+        // ✅ INICIALIZAR Y HABILITAR CAMPOS INMEDIATAMENTE
+        document.addEventListener('DOMContentLoaded', function() {
+            // Habilitar campos de inmediato
+            document.getElementById('mensaje-input').disabled = false;
+            document.getElementById('btn-enviar').disabled = false;
+            document.getElementById('mensaje-input').placeholder = "Escribe un mensaje...";
+            document.getElementById('mensaje-input').focus();
+            
+            // Conectar WebSocket
+            conectarWebSocket();
+        });
+    </script>
+</body>
+</html>
