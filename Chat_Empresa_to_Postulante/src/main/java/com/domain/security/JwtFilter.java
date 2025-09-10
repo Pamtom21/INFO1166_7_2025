@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Set;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -26,12 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Rutas públicas que no requieren autenticación
-    private static final Set<String> PUBLIC_PATHS = Set.of(
-        "/auth/login",
-        "/auth/register"
-    );
-
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -40,8 +33,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // Ignorar rutas públicas exactas
-        if (PUBLIC_PATHS.contains(path)) {
+        // Excluir cualquier ruta que comience con /auth/
+        if (path.startsWith("/auth/")) {
             chain.doFilter(request, response);
             return;
         }
@@ -50,11 +43,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
+        // Extraer token del header Authorization
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            username = jwtUtil.extractUsername(jwt); // Puede devolver null si el token es inválido
         }
 
+        // Validar y establecer autenticación en contexto
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
