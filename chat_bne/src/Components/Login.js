@@ -17,7 +17,7 @@ function Login() {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('http://localhost:8080/auth/login', { email, password });
+      const res = await axios.post('https://info1166-7-2025.onrender.com/auth/login', { email, password });
       alert('Token: ' + res.data.token);
     } catch (err) {
       if (err.response && err.response.data) {
@@ -33,7 +33,7 @@ function Login() {
     setRegisterError('');
     setRegisterSuccess('');
     try {
-      await axios.post('http://localhost:8080/auth/register', null, {
+      await axios.post('https://info1166-7-2025.onrender.com/auth/register', null, {
         params: { nombre, email, password, tipo }
       });
       setRegisterSuccess('Usuario registrado correctamente');
