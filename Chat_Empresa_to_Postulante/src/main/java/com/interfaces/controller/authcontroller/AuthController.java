@@ -72,5 +72,11 @@ public class AuthController {
         userDetailsService.save(usuario);
 
         return "Usuario registrado correctamente";
+    
+    }
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
 }
+
 }
