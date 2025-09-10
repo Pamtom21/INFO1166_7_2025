@@ -56,27 +56,21 @@ public class AuthController {
 
         return new LoginResponse(token, usuario.getEmail(), usuario.getNombre());
     }
-
+    public static record RegisterRequest(String nombre, String email, String password, String tipo) {}
     @PostMapping("/register")
-    public String register(@RequestParam String nombre,
-                        @RequestParam String email,
-                        @RequestParam String password,
-                        @RequestParam String tipo) throws Exception {
-
-        // Verificar si el email ya existe
-        if (userDetailsService.existsByEmail(email)) {
+    public String register(@RequestBody RegisterRequest request) throws Exception {
+        if (userDetailsService.existsByEmail(request.email())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email/RUT ya está registrado");
         }
 
-        // Crear usuario
         Usuario usuario = new Usuario();
-        usuario.setNombre(nombre);
-        usuario.setEmail(email);
-        usuario.setPassword(passwordEncoder.encode(password)); // contraseña encriptada
-        usuario.setTipo(TipoUsuario.valueOf(tipo.toUpperCase()));
+        usuario.setNombre(request.nombre());
+        usuario.setEmail(request.email());
+        usuario.setPassword(passwordEncoder.encode(request.password()));
+        usuario.setTipo(TipoUsuario.valueOf(request.tipo().toUpperCase()));
 
         userDetailsService.save(usuario);
 
         return "Usuario registrado correctamente";
-    }
+}
 }
