@@ -13,7 +13,7 @@ public class Mensaje{
 
     @ManyToOne
     @JoinColumn(name = "id_chat") // columna que apunta a Chat
-    private Chat chat;
+    private chat chat;
 
     private String contenido; // el texto del mensaje
     private LocalDateTime fechaHora;
@@ -24,8 +24,8 @@ public class Mensaje{
     public Long getIdMensaje() { return idMensaje; }
     public void setIdMensaje(Long idMensaje) { this.idMensaje = idMensaje; }
 
-    public Chat getChat() { return chat; }
-    public void setChat(Chat chat) { this.chat = chat; }
+    public chat getChat() { return chat; }
+    public void setChat(chat chat) { this.chat = chat; }
 
     public String getContenido() { return contenido; }
     public void setContenido(String contenido) { this.contenido = contenido; }

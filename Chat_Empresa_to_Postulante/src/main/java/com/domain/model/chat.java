@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "chat")
-public class Chat {
+public class chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Chat {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mensaje> mensajes = new ArrayList<>();
 
-    public Chat() {}
+    public chat() {}
 
     // Getters y Setters
     public Long getIdChat() { return idChat; }
