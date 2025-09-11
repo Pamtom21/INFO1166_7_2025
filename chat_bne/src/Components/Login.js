@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './css/Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const [showRegister, setShowRegister] = useState(false);
   const [nombre, setNombre] = useState('');
   const [tipo, setTipo] = useState('');
@@ -14,13 +14,20 @@ function Login() {
   const [registerSuccess, setRegisterSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
     try {
       const res = await axios.post('https://info1166-7-2025.onrender.com/auth/login', { email, password });
-      alert('Token: ' + res.data.token);
+
+      // Guardamos token en localStorage
+      localStorage.setItem("token", res.data.token);
+
+      // Redirigimos al dashboard
+      navigate("/dashboard");
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message || 'Credenciales incorrectas');
@@ -37,7 +44,6 @@ function Login() {
     setRegisterError('');
     setRegisterSuccess('');
 
-    // Validación previa
     if (!nombre || !email || !password || !tipo) {
       setRegisterError('Todos los campos son obligatorios');
       return;
