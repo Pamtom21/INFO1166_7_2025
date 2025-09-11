@@ -5,40 +5,44 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 @Entity
 @Table(name = "chat")
 public class chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idChat;
+    private Long id;
 
-    private String remitente;
-    private String destinatario;
+    @ManyToOne
+    private Usuario remitente;
+
+    @ManyToOne
+    private Usuario destinatario;
+
     private LocalDateTime fechaHora;
 
-    // Relación uno a muchos con mensaje
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mensaje> mensajes = new ArrayList<>();
+
 
     public chat() {}
 
     // Getters y Setters
-    public Long getIdChat() { return idChat; }
-    public void setIdChat(Long idChat) { this.idChat = idChat; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getRemitente() { return remitente; }
-    public void setRemitente(String remitente) { this.remitente = remitente; }
+    public Usuario getRemitente() { return remitente; }
+    public void setRemitente(Usuario remitente) { this.remitente = remitente; }
 
-    public String getDestinatario() { return destinatario; }
-    public void setDestinatario(String destinatario) { this.destinatario = destinatario; }
+    public Usuario getDestinatario() { return destinatario; }
+    public void setDestinatario(Usuario destinatario) { this.destinatario = destinatario; }
 
     public LocalDateTime getFechaHora() { return fechaHora; }
     public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 
     public List<Mensaje> getMensajes() { return mensajes; }
-    public void addMensajes(Mensaje mensaje) { this.mensajes.add(mensaje); mensaje.setChat(this); }
+    public void addMensaje(Mensaje mensaje) {
+        this.mensajes.add(mensaje);
+        mensaje.setChat(this);
+    }
 }

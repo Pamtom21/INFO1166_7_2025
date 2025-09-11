@@ -5,24 +5,24 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mensaje")
-public class Mensaje{
+public class Mensaje {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idMensaje;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_chat") // columna que apunta a Chat
+    @JoinColumn(name = "chat_id")  // FK hacia Chat
     private chat chat;
 
-    private String contenido; // el texto del mensaje
+    private String contenido;
     private LocalDateTime fechaHora;
 
     public Mensaje() {}
 
     // Getters y Setters
-    public Long getIdMensaje() { return idMensaje; }
-    public void setIdMensaje(Long idMensaje) { this.idMensaje = idMensaje; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public chat getChat() { return chat; }
     public void setChat(chat chat) { this.chat = chat; }

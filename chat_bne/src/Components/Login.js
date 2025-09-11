@@ -21,7 +21,7 @@ function Login() {
     setError('');
     setIsSubmitting(true);
     try {
-      const res = await axios.post('https://info1166-7-2025.onrender.com/auth/login', { email, password });
+      const res = await axios.post('http://localhost:8080/auth/login', { email, password });
 
       // Guardamos token en localStorage
       localStorage.setItem("token", res.data.token);
@@ -51,7 +51,7 @@ function Login() {
 
     setIsSubmitting(true);
     try {
-      await axios.post('https://info1166-7-2025.onrender.com/auth/register', {
+      await axios.post('http://localhost:8080/auth/register', {
         nombre,
         email,
         password,

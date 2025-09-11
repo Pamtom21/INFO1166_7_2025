@@ -24,6 +24,7 @@ public class Usuario implements UserDetails{
 
     public Usuario() {}
 //tipo de usuario empresa o postulante
+    public Long getId(){ return this.id; }
     public String getNombre(){return this.nombre; }
     public void setNombre(String nombre){this.nombre = nombre;}
 

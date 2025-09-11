@@ -4,30 +4,54 @@ function ChatBox({ selectedChat }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
-  // Cargar mensajes cuando cambia el chat seleccionado
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    if (selectedChat) {
-      fetch(`http://localhost:4000/api/chats/${selectedChat.id}/messages`, {
-        credentials: "include",
+    if (selectedChat && token) {
+      fetch(`http://localhost:8080/api/chat/mensajes/${selectedChat.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-        .then((res) => res.json())
+        .then(async (res) => {
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Error ${res.status}: ${text}`);
+          }
+          const text = await res.text();
+          return text ? JSON.parse(text) : [];
+        })
         .then((data) => setMessages(data))
         .catch((err) => console.error("Error cargando mensajes:", err));
     }
-  }, [selectedChat]);
+  }, [selectedChat, token]);
 
   const sendMessage = () => {
-    if (!newMessage.trim() || !selectedChat) return;
+    if (!newMessage.trim() || !selectedChat || !token) return;
 
-    fetch(`http://localhost:4000/api/chats/${selectedChat.id}/messages`, {
+    fetch(`http://localhost:8080/api/chat/enviar`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ text: newMessage }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        chatId: selectedChat.id,
+        contenido: newMessage,
+      }),
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Error ${res.status}: ${text}`);
+        }
+        const text = await res.text();
+        return text ? JSON.parse(text) : null;
+      })
       .then((msg) => {
-        setMessages((prev) => [...prev, msg]);
+        if (msg) {
+          setMessages((prev) => [...prev, msg]);
+        }
         setNewMessage("");
       })
       .catch((err) => console.error("Error enviando mensaje:", err));
@@ -40,7 +64,7 @@ function ChatBox({ selectedChat }) {
   return (
     <div className="flex flex-col h-full border rounded-lg shadow bg-white">
       <div className="p-3 border-b font-semibold">
-        Chat con {selectedChat.name}
+        Chat con {selectedChat.destinatarioNombre || selectedChat.remitenteNombre}
       </div>
 
       <div className="flex-1 p-3 overflow-y-auto space-y-2">
@@ -48,12 +72,12 @@ function ChatBox({ selectedChat }) {
           <div
             key={msg.id}
             className={`p-2 rounded-lg max-w-[70%] ${
-              msg.sender === "Yo"
+              msg.esPropio
                 ? "bg-blue-500 text-white self-end ml-auto"
                 : "bg-gray-200 text-black self-start"
             }`}
           >
-            {msg.text}
+            {msg.contenido}
           </div>
         ))}
       </div>
@@ -78,5 +102,6 @@ function ChatBox({ selectedChat }) {
 }
 
 export default ChatBox;
+
 
 

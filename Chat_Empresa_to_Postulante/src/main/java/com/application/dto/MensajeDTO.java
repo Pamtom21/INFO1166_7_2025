@@ -1,18 +1,42 @@
 package com.application.dto;
 
-public class MensajeDTO {
-    private String contenido;
-    private Long remitenteId;
-    private Long destinatarioId;
+import java.time.LocalDateTime;
 
-    public MensajeDTO() {}
-//simplifica el envio de datos  y evitar exponer entidades completas 
-    public MensajeDTO(String contenido, Long remitenteId, Long destinatarioId) {
-        this.contenido = contenido;
-        this.remitenteId = remitenteId;
-        this.destinatarioId = destinatarioId;
+public class MensajeDTO {
+    private Long id;
+    private Long chatId;
+    private String contenido;
+    private LocalDateTime fechaHora;
+
+    public Long getId() {
+        return id;
     }
-    public String getContenido(){
-        return this.contenido;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
     }
 }
