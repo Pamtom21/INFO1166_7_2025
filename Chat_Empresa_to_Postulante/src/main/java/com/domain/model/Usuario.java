@@ -7,8 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,9 +21,19 @@ public class Usuario {
     private String correo; // correo del usuario
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty // asegura serialización/deserialización JSON
     private TipoUsuario tipo;
 
+    // Constructor vacío requerido por JPA
     public Usuario() {}
+
+    // Constructor completo útil para DTOs o pruebas
+    public Usuario(Long id, String nombre, String correo, TipoUsuario tipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.tipo = tipo;
+    }
 
     // Getters y setters
     public Long getId() {
@@ -54,4 +67,5 @@ public class Usuario {
     public void setTipo(TipoUsuario tipo) {
         this.tipo = tipo;
     }
+
 }

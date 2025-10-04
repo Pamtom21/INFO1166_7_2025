@@ -1,15 +1,12 @@
-package test.controller; // Cambia esto a la ruta real de tu proyecto
+package com.example.Chat_Empresa_to_Postulante.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.domain.model.Usuario;
-import com.service.UsuarioService;
+import com.example.Chat_Empresa_to_Postulante.model.Usuario;
+import com.example.Chat_Empresa_to_Postulante.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -30,7 +27,7 @@ public class UsuarioController {
             Usuario registrado = usuarioService.registrarUsuario(
                     usuario.getNombre(),
                     usuario.getCorreo(),
-                    usuario.getTipo().name()
+                    usuario.getTipo() // 👈 Aquí depende si es enum o String
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(registrado);

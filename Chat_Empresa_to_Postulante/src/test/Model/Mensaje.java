@@ -1,5 +1,4 @@
 package com.example.Chat_Empresa_to_Postulante.model;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

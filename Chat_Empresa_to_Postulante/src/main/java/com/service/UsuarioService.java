@@ -1,9 +1,8 @@
-package com.service;
+package com.example.Chat_Empresa_to_Postulante.service;
 
-import com.domain.model.Usuario;
-import com.domain.model.TipoUsuario;
-import com.domain.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.Chat_Empresa_to_Postulante.model.Usuario;
+import com.example.Chat_Empresa_to_Postulante.model.TipoUsuario;
+import com.example.Chat_Empresa_to_Postulante.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,33 +10,46 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    // Método para registrar un usuario con validación de correo único
-    public Usuario registrarUsuario(String nombre, String tipoStr) {
-        // Convertimos el tipo de usuario de String a enum
-        TipoUsuario tipo;
-        try {
-            tipo = TipoUsuario.valueOf(tipoStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Tipo de usuario inválido. Debe ser EMPRESA o POSTULANTE.");
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    /**
+     * Registra un usuario con validación de correo único.
+     *
+     * @param nombre nombre del usuario
+     * @param correo correo del usuario
+     * @param tipoStr tipo de usuario como String (EMPRESA o POSTULANTE)
+     * @return Usuario registrado
+     */
+    public Usuario registrarUsuario(String nombre, String correo, String tipoStr) {
+        if (correoExiste(correo)) {
+            throw new IllegalArgumentException("El correo ya está registrado.");
         }
 
-        // Crear usuario
+        // Convertimos el tipo de usuario de String a enum de forma segura
+        TipoUsuario tipo = TipoUsuario.fromString(tipoStr);
+
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
+        usuario.setCorreo(correo);
         usuario.setTipo(tipo);
 
         return usuarioRepository.save(usuario);
     }
 
-    // Método opcional para validar si el correo ya existe
+    /**
+     * Verifica si un correo ya existe.
+     */
     public boolean correoExiste(String correo) {
         return usuarioRepository.existsByCorreo(correo);
     }
 
-    // Método opcional para obtener un usuario por correo
+    /**
+     * Obtiene un usuario por correo.
+     */
     public Optional<Usuario> obtenerPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
     }
