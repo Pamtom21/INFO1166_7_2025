@@ -1,13 +1,13 @@
 package com.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Usuario {
@@ -30,6 +30,13 @@ public class Usuario {
     // Constructor completo útil para DTOs o pruebas
     public Usuario(Long id, String nombre, String correo, TipoUsuario tipo) {
         this.id = id;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.tipo = tipo;
+    }
+
+    // Nuevo constructor sin id, usado al crear un usuario
+    public Usuario(String nombre, String correo, TipoUsuario tipo) {
         this.nombre = nombre;
         this.correo = correo;
         this.tipo = tipo;

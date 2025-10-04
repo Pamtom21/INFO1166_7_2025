@@ -28,7 +28,7 @@ public class UsuarioService {
         // Convertimos el tipo de usuario de String a enum
         TipoUsuario tipo = TipoUsuario.valueOf(tipoStr.toUpperCase());
 
-        // Usamos el constructor correcto (este sí existe en tu Usuario.java)
+        // Usamos el constructor correcto en Usuario.java de domain.model
         Usuario usuario = new Usuario(nombre, correo, tipo);
 
         return usuarioRepository.save(usuario);
