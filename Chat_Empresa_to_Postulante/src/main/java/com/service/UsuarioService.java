@@ -1,11 +1,12 @@
-package com.example.Chat_Empresa_to_Postulante.service;
-
-import com.example.Chat_Empresa_to_Postulante.model.Usuario;
-import com.example.Chat_Empresa_to_Postulante.model.TipoUsuario;
-import com.example.Chat_Empresa_to_Postulante.repository.UsuarioRepository;
-import org.springframework.stereotype.Service;
+package com.service;
 
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.domain.model.TipoUsuario;
+import com.domain.model.Usuario;
+import com.domain.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
@@ -18,24 +19,17 @@ public class UsuarioService {
 
     /**
      * Registra un usuario con validación de correo único.
-     *
-     * @param nombre nombre del usuario
-     * @param correo correo del usuario
-     * @param tipoStr tipo de usuario como String (EMPRESA o POSTULANTE)
-     * @return Usuario registrado
      */
     public Usuario registrarUsuario(String nombre, String correo, String tipoStr) {
         if (correoExiste(correo)) {
             throw new IllegalArgumentException("El correo ya está registrado.");
         }
 
-        // Convertimos el tipo de usuario de String a enum de forma segura
-        TipoUsuario tipo = TipoUsuario.fromString(tipoStr);
+        // Convertimos el tipo de usuario de String a enum
+        TipoUsuario tipo = TipoUsuario.valueOf(tipoStr.toUpperCase());
 
-        Usuario usuario = new Usuario();
-        usuario.setNombre(nombre);
-        usuario.setCorreo(correo);
-        usuario.setTipo(tipo);
+        // Usamos el constructor correcto (este sí existe en tu Usuario.java)
+        Usuario usuario = new Usuario(nombre, correo, tipo);
 
         return usuarioRepository.save(usuario);
     }

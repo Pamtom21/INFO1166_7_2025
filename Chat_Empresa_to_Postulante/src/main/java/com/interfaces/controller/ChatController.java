@@ -1,14 +1,21 @@
 package com.interfaces.controller;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.application.dto.MensajeDTO;
+import com.domain.model.Chat;
 import com.domain.model.Mensaje;
 import com.domain.model.Usuario;
-import com.domain.model.Chat;
-import com.service.ChatService;
 import com.domain.repository.UsuarioRepository;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
+import com.service.ChatService;
 
 @RestController
 @RequestMapping("/api/chat")

@@ -1,14 +1,17 @@
 package com.service;
-import com.application.dto.MensajeDTO;
-import com.domain.model.Mensaje;
-import com.domain.model.Chat;
-import com.domain.model.Usuario;
-import com.domain.repository.MensajeRepository;
-import com.domain.repository.Chat_Repository;
-import com.domain.repository.UsuarioRepository;
-import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.application.dto.MensajeDTO;
+import com.domain.model.Chat;
+import com.domain.model.Mensaje;
+import com.domain.model.Usuario;
+import com.domain.repository.Chat_Repository;
+import com.domain.repository.MensajeRepository;
+import com.domain.repository.UsuarioRepository;
 
 @Service
 public class ChatService {
@@ -37,11 +40,10 @@ public class ChatService {
             chatRepository.save(chat); // Guardar chat antes de asignar mensajes
         }
 
-        Mensaje mensaje = new Mensaje();
-        mensaje.setContenido(dto.getContenido());
-        mensaje.setFechaHora(LocalDateTime.now());
-        mensaje.setChat(chat);
+        // Construimos el mensaje usando el constructor de tu clase Mensaje
+        Mensaje mensaje = new Mensaje(dto.getContenido(), remitente, destinatario);
 
+        // Agregar el mensaje al chat
         chat.addMensaje(mensaje);
 
         return mensajeRepository.save(mensaje);
@@ -69,7 +71,7 @@ public class ChatService {
             return List.of(); // No hay chat, devolver lista vacía
         }
 
-        // Retornar solo los mensajes de ese chat
+        // Retornar los mensajes de ese chat
         return mensajeRepository.findByChatIdChat(chat.getIdChat());
     }
 }

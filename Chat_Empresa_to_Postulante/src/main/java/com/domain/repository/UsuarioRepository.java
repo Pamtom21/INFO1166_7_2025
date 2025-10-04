@@ -1,8 +1,11 @@
-package com.example.Chat_Empresa_to_Postulante.repository;
-import com.example.Chat_Empresa_to_Postulante.model.Usuario;
+package com.domain.repository; // ✅ Paquete corregido
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.Optional;
+
+import com.domain.model.Usuario; // ✅ Import al paquete correcto de Usuario
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
