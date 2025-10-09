@@ -1,11 +1,11 @@
-package com.domain.repository; // ✅ Paquete corregido
+package com.domain.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.domain.model.Usuario; // ✅ Import al paquete correcto de Usuario
+import com.domain.model.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
