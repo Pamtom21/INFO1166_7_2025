@@ -1,4 +1,5 @@
 package com.interfaces.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +41,10 @@ public class ChatController {
                 .orElseThrow(() -> new IllegalArgumentException("Destinatario no encontrado"));
 
         // Buscar si ya existe chat entre estos usuarios
-        Chat chat = null;
-        List<Mensaje> mensajesExistentes = chatService.obtenerMensajes(remitente.getId(), destinatario.getId());
-        if (!mensajesExistentes.isEmpty()) {
-            chat = mensajesExistentes.get(0).getChat(); // Tomamos el chat existente
-        }
+        Chat chat = chatService.obtenerChatExistente(remitente.getId(), destinatario.getId())
+                .orElseGet(() -> chatService.crearChat(remitente, destinatario));
 
+        // Enviar mensaje
         Mensaje mensaje = chatService.enviarMensaje(chat, mensajeDTO, remitente, destinatario);
         return ResponseEntity.ok(mensaje);
     }

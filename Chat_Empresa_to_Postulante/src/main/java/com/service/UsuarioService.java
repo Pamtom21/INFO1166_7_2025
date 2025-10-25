@@ -25,10 +25,8 @@ public class UsuarioService {
             throw new IllegalArgumentException("El correo ya está registrado.");
         }
 
-        // Convertimos el tipo de usuario de String a enum
         TipoUsuario tipo = TipoUsuario.valueOf(tipoStr.toUpperCase());
 
-        // Usamos el constructor correcto en Usuario.java de domain.model
         Usuario usuario = new Usuario(nombre, correo, tipo);
 
         return usuarioRepository.save(usuario);
@@ -46,5 +44,12 @@ public class UsuarioService {
      */
     public Optional<Usuario> obtenerPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo);
+    }
+
+    /**
+     * Obtiene un usuario por su ID.
+     */
+    public Optional<Usuario> obtenerPorId(Long id) {
+        return usuarioRepository.findById(id);
     }
 }
